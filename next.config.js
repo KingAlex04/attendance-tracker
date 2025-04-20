@@ -17,12 +17,6 @@ const nextConfig = {
   compiler: {
     styledComponents: true
   },
-  // Enable special handling for registration page
-  modularizeImports: {
-    'next/navigation': {
-      transform: 'next/navigation/{{member}}',
-    }
-  },
   webpack: (config, { isServer }) => {
     // Fix for mongoose import issues
     if (!isServer) {
