@@ -7,6 +7,23 @@ process.env.SKIP_TYPESCRIPT_CHECKS = 'true';
 process.env.SKIP_ESLINT_CHECKS = 'true';
 process.env.NODE_OPTIONS = '--max-old-space-size=4096';
 
+// Create a custom browser.umd.js for mongoose to prevent errors
+try {
+  const mongooseDir = path.join('node_modules', 'mongoose', 'dist');
+  if (!fs.existsSync(mongooseDir)) {
+    console.log('Creating mongoose/dist directory...');
+    fs.mkdirSync(mongooseDir, { recursive: true });
+  }
+  
+  const browserUmdPath = path.join(mongooseDir, 'browser.umd.js');
+  if (!fs.existsSync(browserUmdPath)) {
+    console.log('Creating empty browser.umd.js for mongoose...');
+    fs.writeFileSync(browserUmdPath, 'console.warn("Mongoose browser version not supported");');
+  }
+} catch (error) {
+  console.error('Error creating mongoose browser.umd.js:', error);
+}
+
 // Check for next.config.ts and convert to next.config.js if it exists
 try {
   if (fs.existsSync('next.config.ts') && !fs.existsSync('next.config.js')) {

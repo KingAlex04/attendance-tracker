@@ -7,10 +7,8 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   experimental: {
-    // This is experimental but can be used if continuing to have problems
-    serverActions: {
-      bodySizeLimit: '10mb',
-    },
+    // Only include compatible experimental features
+    serverActions: true,
   },
   compiler: {
     // Enables the styled-components SWC transform

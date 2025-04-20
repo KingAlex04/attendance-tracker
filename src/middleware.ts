@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getUserFromToken, isAdmin, isCompany, isStaff } from './lib/utils/auth';
 
-export async function middleware(request: NextRequest) {
+// Update middleware to be compatible with Next.js 15
+export function middleware(request: NextRequest) {
   // Public routes that don't require authentication
   const publicRoutes = [
     '/api/auth/login',
