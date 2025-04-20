@@ -21,6 +21,10 @@ interface AttendanceStatus {
   }>;
 }
 
+interface ApiError extends Error {
+  code?: number;
+}
+
 export default function StaffDashboard() {
   const [status, setStatus] = useState<AttendanceStatus>({
     isCheckedIn: false,
@@ -49,8 +53,9 @@ export default function StaffDashboard() {
         }
 
         setStatus(data);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        const error = err as ApiError;
+        setError(error.message || 'An error occurred');
         console.error(err);
       } finally {
         setLoading(false);
@@ -119,11 +124,12 @@ export default function StaffDashboard() {
           },
         ],
       });
-    } catch (err: any) {
-      if (err.code === 1) {
+    } catch (err: unknown) {
+      const error = err as ApiError;
+      if (error.code === 1) {
         setLocationError('Location permission denied. Please enable location services to check in.');
       } else {
-        setError(err.message);
+        setError(error.message || 'An error occurred');
       }
       console.error(err);
     } finally {
@@ -178,11 +184,12 @@ export default function StaffDashboard() {
           },
         ],
       }));
-    } catch (err: any) {
-      if (err.code === 1) {
+    } catch (err: unknown) {
+      const error = err as ApiError;
+      if (error.code === 1) {
         setLocationError('Location permission denied. Please enable location services to check out.');
       } else {
-        setError(err.message);
+        setError(error.message || 'An error occurred');
       }
       console.error(err);
     } finally {
@@ -227,11 +234,12 @@ export default function StaffDashboard() {
         },
         locationLogs: data.locationLogs,
       }));
-    } catch (err: any) {
-      if (err.code === 1) {
+    } catch (err: unknown) {
+      const error = err as ApiError;
+      if (error.code === 1) {
         setLocationError('Location permission denied. Please enable location services to track location.');
       } else {
-        setError(err.message);
+        setError(error.message || 'An error occurred');
       }
       console.error(err);
     } finally {

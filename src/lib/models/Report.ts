@@ -6,6 +6,30 @@ export enum ReportType {
   MONTHLY = 'monthly',
 }
 
+export interface ReportData {
+  attendanceSummary?: {
+    totalPresent: number;
+    totalAbsent: number;
+    totalLate: number;
+    averageWorkingHours: number;
+  };
+  staffPerformance?: Record<string, {
+    presentDays: number;
+    absentDays: number;
+    lateDays: number;
+    averageWorkingHours: number;
+  }>;
+  locationData?: Array<{
+    staffId: string;
+    locations: Array<{
+      lat: number;
+      lng: number;
+      timestamp: string;
+    }>;
+  }>;
+  [key: string]: unknown;
+}
+
 export interface IReport extends Document {
   companyId: mongoose.Types.ObjectId;
   type: ReportType;
@@ -15,7 +39,7 @@ export interface IReport extends Document {
   endDate: Date;
   generatedBy: mongoose.Types.ObjectId;
   fileUrl?: string;
-  data: any;
+  data: ReportData;
   createdAt: Date;
   updatedAt: Date;
 }
