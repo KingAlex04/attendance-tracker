@@ -17,6 +17,24 @@ const nextConfig = {
   compiler: {
     styledComponents: true
   },
+  // Add cross-origin isolation policy
+  headers: async () => {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin',
+          },
+          {
+            key: 'Cross-Origin-Embedder-Policy',
+            value: 'require-corp',
+          },
+        ],
+      },
+    ];
+  },
   webpack: (config, { isServer }) => {
     // Fix for mongoose import issues
     if (!isServer) {

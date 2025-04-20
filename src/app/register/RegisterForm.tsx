@@ -23,11 +23,19 @@ export default function RegisterForm() {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isBrowser, setIsBrowser] = useState(false);
+
+  // Safely handle client-side only code
+  useEffect(() => {
+    setIsBrowser(true);
+  }, []);
 
   useEffect(() => {
-    const role = searchParams.get('role');
-    if (role && ['admin', 'company', 'staff'].includes(role)) {
-      setFormData((prev) => ({ ...prev, role }));
+    if (searchParams) {
+      const role = searchParams.get('role');
+      if (role && ['admin', 'company', 'staff'].includes(role)) {
+        setFormData((prev) => ({ ...prev, role }));
+      }
     }
   }, [searchParams]);
 
@@ -89,9 +97,16 @@ export default function RegisterForm() {
         throw new Error(data.message || 'Registration failed');
       }
 
-      // Store token and user in localStorage
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      // Only use localStorage in the browser
+      if (isBrowser && typeof window !== 'undefined') {
+        try {
+          // Store token and user in localStorage
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('user', JSON.stringify(data.user));
+        } catch (storageError) {
+          console.error('Error storing auth data:', storageError);
+        }
+      }
 
       // Redirect based on role
       if (data.user.role === 'admin') {

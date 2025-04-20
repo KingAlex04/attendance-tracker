@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import RegisterForm from './RegisterForm';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 // Main Register page component
 export default function Register() {
@@ -17,9 +18,11 @@ export default function Register() {
           <div>
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Create your account</h2>
           </div>
-          <Suspense fallback={<div className="text-center">Loading registration form...</div>}>
-            <RegisterForm />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={<div className="text-center">Loading registration form...</div>}>
+              <RegisterForm />
+            </Suspense>
+          </ErrorBoundary>
           <div className="text-center mt-4">
             <p className="text-sm text-gray-600">
               Already have an account?{' '}
