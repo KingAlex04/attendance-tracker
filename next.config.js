@@ -6,12 +6,8 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  experimental: {
-    // Only include compatible experimental features
-    serverActions: true,
-  },
+  // Remove experimental features entirely
   compiler: {
-    // Enables the styled-components SWC transform
     styledComponents: true
   },
   webpack: (config, { isServer }) => {
