@@ -14,6 +14,7 @@ const staticPaths = [
   '/_next/',
   '/assets/',
   '/favicon.ico',
+  '/images/',
 ];
 
 export function middleware(request) {
@@ -27,10 +28,11 @@ export function middleware(request) {
     return NextResponse.next();
   }
   
-  // Basic auth check - you'll need to adjust this based on how you're storing tokens
-  const token = request.cookies.get('token')?.value;
+  // Get auth token from cookies or headers
+  const authToken = request.cookies.get('token')?.value || 
+                   request.headers.get('authorization')?.replace('Bearer ', '');
   
-  if (!token) {
+  if (!authToken) {
     // If API route
     if (pathname.startsWith('/api/')) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
@@ -48,7 +50,7 @@ export const config = {
   matcher: [
     // Match all API routes
     '/api/:path*',
-    // Match all frontend routes except public ones
+    // Match all frontend routes except public ones and static assets
     '/((?!_next/static|_next/image|favicon.ico|assets).*)',
   ],
 }; 

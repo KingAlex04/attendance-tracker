@@ -6,7 +6,10 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  // Remove experimental features entirely
+  experimental: {
+    // Minimal experimental features needed
+    serverComponentsExternalPackages: ['mongoose', 'bcryptjs', 'mongodb'],
+  },
   compiler: {
     styledComponents: true
   },
@@ -16,6 +19,8 @@ const nextConfig = {
       config.resolve.alias = {
         ...config.resolve.alias,
         mongoose: false, // This prevents client-side mongoose import
+        mongodb: false,
+        bcryptjs: false,
       };
       
       config.resolve.fallback = {
