@@ -9,9 +9,19 @@ const nextConfig = {
   experimental: {
     // Minimal experimental features needed
     serverComponentsExternalPackages: ['mongoose', 'bcryptjs', 'mongodb'],
+    // Using more stable options
+    serverActions: {
+      allowedOrigins: ['localhost:3000', 'attendance-tracker.vercel.app'],
+    },
   },
   compiler: {
     styledComponents: true
+  },
+  // Enable special handling for registration page
+  modularizeImports: {
+    'next/navigation': {
+      transform: 'next/navigation/{{member}}',
+    }
   },
   webpack: (config, { isServer }) => {
     // Fix for mongoose import issues
