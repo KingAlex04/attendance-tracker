@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  swcMinify: true,
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -17,8 +16,18 @@ const nextConfig = {
     // Enables the styled-components SWC transform
     styledComponents: true
   },
-  webpack: (config) => {
-    // Custom webpack config if needed
+  webpack: (config, { isServer }) => {
+    // Fix for mongoose import issues
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        dns: false,
+        fs: false,
+        net: false,
+        tls: false,
+      };
+    }
+    
     return config;
   }
 };
