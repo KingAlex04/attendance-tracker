@@ -1,5 +1,14 @@
+// Import mongoose only on the server side
 import mongoose, { Schema, Document, Model } from 'mongoose';
 import bcrypt from 'bcryptjs';
+
+// Ensure no browser import is used
+/* eslint-disable */
+if (typeof window !== 'undefined') {
+  // This code runs in the browser
+  console.warn('Mongoose model accessed on client side');
+}
+/* eslint-enable */
 
 export enum UserRole {
   ADMIN = 'admin',

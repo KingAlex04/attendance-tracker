@@ -19,12 +19,25 @@ const nextConfig = {
   webpack: (config, { isServer }) => {
     // Fix for mongoose import issues
     if (!isServer) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        mongoose: false, // This prevents client-side mongoose import
+      };
+      
       config.resolve.fallback = {
         ...config.resolve.fallback,
         dns: false,
         fs: false,
         net: false,
         tls: false,
+        crypto: false,
+        stream: false,
+        http: false,
+        https: false,
+        zlib: false,
+        path: false,
+        os: false,
+        util: false,
       };
     }
     
