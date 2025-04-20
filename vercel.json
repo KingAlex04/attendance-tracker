@@ -7,7 +7,7 @@
     }
   ],
   "env": {
-    "DATABASE_URL": "mongodb+srv://attendance-tracker:<db_password>@cluster0.j6bjmm4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+    "DATABASE_URL": "mongodb+srv://attendance-tracker:Laxmi%4013579@cluster0.j6bjmm4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
     "NEXTAUTH_SECRET": "your-super-secret-jwt-key-change-in-production",
     "JWT_SECRET": "your-super-secret-jwt-key-change-in-production"
   },

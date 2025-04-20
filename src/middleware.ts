@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getUserFromToken, isAdmin, isCompany, isStaff } from './lib/utils/auth';
 
-export const runtime = 'nodejs';
-
 export async function middleware(request: NextRequest) {
   // Public routes that don't require authentication
   const publicRoutes = [
