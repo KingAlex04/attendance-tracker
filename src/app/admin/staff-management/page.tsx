@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 
 interface StaffMember {
   id: string;
@@ -13,7 +12,6 @@ interface StaffMember {
 }
 
 export default function StaffManagement() {
-  const router = useRouter();
   const [staffMembers, setStaffMembers] = useState<StaffMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -42,8 +40,9 @@ export default function StaffManagement() {
         }
 
         setStaffMembers(data.data);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        const error = err as Error;
+        setError(error.message || 'An error occurred');
         console.error(err);
       } finally {
         setLoading(false);
@@ -94,8 +93,9 @@ export default function StaffManagement() {
         setShowAddModal(false);
         resetForm();
       }, 2000);
-    } catch (err: any) {
-      setFormError(err.message);
+    } catch (err: unknown) {
+      const error = err as Error;
+      setFormError(error.message || 'An error occurred');
       console.error(err);
     } finally {
       setFormLoading(false);
@@ -140,8 +140,9 @@ export default function StaffManagement() {
         setShowEditModal(false);
         resetForm();
       }, 2000);
-    } catch (err: any) {
-      setFormError(err.message);
+    } catch (err: unknown) {
+      const error = err as Error;
+      setFormError(error.message || 'An error occurred');
       console.error(err);
     } finally {
       setFormLoading(false);
@@ -170,9 +171,10 @@ export default function StaffManagement() {
       );
       
       setStaffMembers(updatedStaffMembers);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as Error;
       console.error(err);
-      alert(`Error: ${err.message}`);
+      alert(`Error: ${error.message || 'An error occurred'}`);
     }
   };
 
@@ -208,9 +210,10 @@ export default function StaffManagement() {
       );
       
       setStaffMembers(updatedStaffMembers);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as Error;
       console.error(err);
-      alert(`Error: ${err.message}`);
+      alert(`Error: ${error.message || 'An error occurred'}`);
     }
   };
 
