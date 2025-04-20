@@ -34,6 +34,20 @@ class ErrorBoundary extends Component<Props, State> {
     console.error('Error caught by ErrorBoundary:', error, errorInfo);
   }
 
+  handleRefresh = () => {
+    // Clear localStorage before reloading
+    try {
+      if (typeof window !== 'undefined') {
+        // localStorage.clear(); // You might want to be more selective
+        // Instead of clearing everything, just clear auth data if needed
+        console.log('Refreshing page after error');
+      }
+    } catch (e) {
+      console.error('Error clearing localStorage:', e);
+    }
+    window.location.reload();
+  };
+
   render(): ReactNode {
     if (this.state.hasError) {
       // You can render any custom fallback UI
@@ -44,9 +58,14 @@ class ErrorBoundary extends Component<Props, State> {
             <p className="text-red-600 mt-2">
               An error occurred while loading this page. Please try refreshing or contact support if the problem persists.
             </p>
+            {this.state.error && (
+              <div className="mt-2 text-sm text-red-700 bg-red-100 p-2 rounded">
+                {this.state.error.toString()}
+              </div>
+            )}
             <button
               className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-              onClick={() => window.location.reload()}
+              onClick={this.handleRefresh}
             >
               Refresh Page
             </button>

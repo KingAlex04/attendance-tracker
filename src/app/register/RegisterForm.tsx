@@ -23,21 +23,32 @@ export default function RegisterForm() {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [isBrowser, setIsBrowser] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
-  // Safely handle client-side only code
+  // Handle client-side mounting safely
   useEffect(() => {
-    setIsBrowser(true);
+    setIsMounted(true);
+    return () => setIsMounted(false);
   }, []);
 
+  // Set the role from query params after component is mounted
   useEffect(() => {
-    if (searchParams) {
-      const role = searchParams.get('role');
-      if (role && ['admin', 'company', 'staff'].includes(role)) {
-        setFormData((prev) => ({ ...prev, role }));
+    if (isMounted && searchParams) {
+      try {
+        const role = searchParams.get('role');
+        if (role && ['admin', 'company', 'staff'].includes(role)) {
+          setFormData((prev) => ({ ...prev, role }));
+        }
+      } catch (e) {
+        console.error('Error processing search params:', e);
       }
     }
-  }, [searchParams]);
+  }, [searchParams, isMounted]);
+
+  // Display a loading state while client-side code is initializing
+  if (!isMounted) {
+    return <div className="text-center p-4">Loading registration form...</div>;
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -91,33 +102,36 @@ export default function RegisterForm() {
         }),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.message || 'Registration failed');
+        const errorData = await response.json().catch(() => ({
+          message: `HTTP error! Status: ${response.status}`,
+        }));
+        throw new Error(errorData.message || 'Registration failed');
       }
 
-      // Only use localStorage in the browser
-      if (isBrowser && typeof window !== 'undefined') {
-        try {
-          // Store token and user in localStorage
-          localStorage.setItem('token', data.token);
-          localStorage.setItem('user', JSON.stringify(data.user));
-        } catch (storageError) {
-          console.error('Error storing auth data:', storageError);
-        }
+      const data = await response.json().catch(() => {
+        throw new Error('Failed to parse server response');
+      });
+
+      // Store token and user in localStorage with error handling
+      try {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+      } catch (storageError) {
+        console.error('Error storing auth data:', storageError);
       }
 
       // Redirect based on role
-      if (data.user.role === 'admin') {
+      if (data.user?.role === 'admin') {
         router.push('/admin/dashboard');
-      } else if (data.user.role === 'company') {
+      } else if (data.user?.role === 'company') {
         router.push('/company/dashboard');
       } else {
         router.push('/staff/dashboard');
       }
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || 'An unknown error occurred');
+      console.error('Registration error:', err);
     } finally {
       setLoading(false);
     }
