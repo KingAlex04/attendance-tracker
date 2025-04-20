@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "env": {
+    "MONGODB_URI": "mongodb+srv://attendance-tracker:Laxmi%4013579@cluster0.j6bjmm4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+    "NEXTAUTH_SECRET": "your-super-secret-jwt-key-change-in-production",
+    "JWT_SECRET": "your-super-secret-jwt-key-change-in-production"
+  },
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next"
+} 
