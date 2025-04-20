@@ -2,75 +2,71 @@
 
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 
-interface Props {
+interface ErrorBoundaryProps {
   children: ReactNode;
   fallback?: ReactNode;
 }
 
-interface State {
+interface ErrorBoundaryState {
   hasError: boolean;
   error: Error | null;
 }
 
-class ErrorBoundary extends Component<Props, State> {
-  constructor(props: Props) {
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = {
       hasError: false,
-      error: null,
+      error: null
     };
   }
 
-  static getDerivedStateFromError(error: Error): State {
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
     // Update state so the next render will show the fallback UI
-    return {
-      hasError: true,
-      error,
-    };
+    return { hasError: true, error };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     // You can log the error to an error reporting service
-    console.error('Error caught by ErrorBoundary:', error, errorInfo);
+    console.error('ErrorBoundary caught an error:', error, errorInfo);
   }
 
-  handleRefresh = () => {
-    // Clear localStorage before reloading
+  handleRefresh = (): void => {
+    // Clear any state that might be causing the error
     try {
-      if (typeof window !== 'undefined') {
-        // localStorage.clear(); // You might want to be more selective
-        // Instead of clearing everything, just clear auth data if needed
-        console.log('Refreshing page after error');
-      }
+      localStorage.clear();
+      sessionStorage.clear();
     } catch (e) {
-      console.error('Error clearing localStorage:', e);
+      console.error('Failed to clear storage:', e);
     }
+    
+    // Reload the page
     window.location.reload();
   };
 
   render(): ReactNode {
     if (this.state.hasError) {
       // You can render any custom fallback UI
-      return (
-        this.props.fallback || (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-md">
-            <h2 className="text-red-800 text-lg font-semibold">Something went wrong</h2>
-            <p className="text-red-600 mt-2">
-              An error occurred while loading this page. Please try refreshing or contact support if the problem persists.
-            </p>
+      return this.props.fallback || (
+        <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-50">
+          <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
+            <h2 className="mb-4 text-xl font-bold text-red-600">Something went wrong</h2>
             {this.state.error && (
-              <div className="mt-2 text-sm text-red-700 bg-red-100 p-2 rounded">
-                {this.state.error.toString()}
+              <div className="p-3 mb-4 overflow-auto text-sm bg-gray-100 rounded max-h-40">
+                <p className="font-mono">{this.state.error.toString()}</p>
               </div>
             )}
+            <p className="mb-4 text-gray-700">
+              We apologize for the inconvenience. Please try refreshing the page.
+            </p>
             <button
-              className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
               onClick={this.handleRefresh}
+              className="w-full px-4 py-2 font-medium text-white bg-blue-600 rounded hover:bg-blue-700"
             >
               Refresh Page
             </button>
           </div>
-        )
+        </div>
       );
     }
 
